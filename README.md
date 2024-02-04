@@ -8,13 +8,14 @@ There are 2 different projects are there in the repository.
       storage.
 
 2. This project is for the demo fo restTemplate, OpenFeign, Eureka naming server, Spring API gateway and Resilience4j.
-   i. currency exchange which has the logic to fetch conversion rate of different currencies and uses H2 database.
-   ii. currency conversion service is used to convert one denomination to other and internally uses the currency exchange
+   1. currency exchange which has the logic to fetch conversion rate of different currencies and uses H2 database.
+   2. currency conversion service is used to convert one denomination to other and internally uses the currency exchange
      service to fetch the current exchange rates of the 2 currencies to convert.
-   iii. api-gateway is used implement spring API gateway to access all other microservices through this gateway microservice
+   3. api-gateway is used implement spring API gateway to access all other microservices through this gateway microservice
      to implement some common functionality in this project we implemented the logging feature.
-   iv. naming-server has config for Eureka server to manage all the instance of all microservices to help implementing
+   4. naming-server has config for Eureka server to manage all the instance of all microservices to help implementing
      load balancing through openfeign.
+
      
 Steps to Run.
 To run 2nd project you need to first run the naming server to properly run all other services as other services has 
