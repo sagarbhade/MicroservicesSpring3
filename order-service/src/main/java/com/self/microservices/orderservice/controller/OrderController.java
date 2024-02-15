@@ -33,7 +33,7 @@ public class OrderController {
 //	@TimeLimiter(name = "inventory")
 //	@Retry(name = "inventory")
 	public String placeOrder(@RequestBody OrderRequest orderRequest) {
-		log.info("Order Controler called");
+		log.info("Order Controller called");
 		return orderService.placeOrder(orderRequest);
 		 
 	}

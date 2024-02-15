@@ -1,0 +1,1 @@
+insert into product(id, name, description, price) values('0c0b9040-dc94-4e3b-a8ad-94e0bc15875e', 'iphone 13', 'iphone 13 desc', 46000);

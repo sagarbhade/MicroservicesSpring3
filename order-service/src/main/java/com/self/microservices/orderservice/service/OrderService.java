@@ -5,12 +5,16 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import com.self.microservices.orderservice.config.InventoryServiceProxy;
+import com.self.microservices.orderservice.config.KafkaConfig;
 import com.self.microservices.orderservice.dto.InventoryResponse;
 import com.self.microservices.orderservice.dto.OrderLineItemsDto;
 import com.self.microservices.orderservice.dto.OrderRequest;
+import com.self.microservices.orderservice.event.OrderPlacedEvent;
 import com.self.microservices.orderservice.model.Order;
 import com.self.microservices.orderservice.model.OrderLineItems;
 import com.self.microservices.orderservice.repository.OrderRepository;
@@ -24,9 +28,13 @@ import lombok.RequiredArgsConstructor;
 public class OrderService {
 	
 	private final OrderRepository orderRepository;
+	 
+	private final KafkaTemplate<String, Object> kafkaTemplate;
 //	private final WebClient.Builder webClientBuilder;
 	@Autowired
 	private InventoryServiceProxy inventoryServiceProxy;
+	
+	 private final ApplicationEventPublisher applicationEventPublisher;
 	
 	public String placeOrder(OrderRequest orderRequest) {
 		Order order= new Order();
@@ -55,6 +63,8 @@ public class OrderService {
 //		boolean allProductsinStock = Arrays.stream(inventoryResponseArray).allMatch(inventoryResponse->inventoryResponse.isInStock());
 		if(allProductsinStock) {
 			orderRepository.save(order);
+			applicationEventPublisher.publishEvent(new OrderPlacedEvent(this, order.getOrderNumber()));
+			//orderNotification("Order Placed Successfully!");
 			return "Order Placed Successfully!";
 		}
 		else {
@@ -62,6 +72,10 @@ public class OrderService {
 		}
 	}
 
+	public boolean orderNotification(String status) {
+		kafkaTemplate.send(KafkaConfig.ORDER_SERVICE,status);
+		return true;
+	}
 	private OrderLineItems mapToDto(OrderLineItemsDto orderLineItemsDto) {
 		OrderLineItems orderLineItems=new OrderLineItems();
 		orderLineItems.setPrice(orderLineItemsDto.getPrice());
